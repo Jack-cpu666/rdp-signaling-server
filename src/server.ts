@@ -21,6 +21,18 @@ const io = new Server(httpServer, {
 app.use(cors());
 app.use(express.json());
 
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'RDP Signaling Server',
+    status: 'running',
+    endpoints: {
+      health: '/health',
+      admin: '/admin'
+    }
+  });
+});
+
 // Serve admin dashboard
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'dashboard.html'));
