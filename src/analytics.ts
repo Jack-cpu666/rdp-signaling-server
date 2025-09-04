@@ -315,8 +315,8 @@ export class AdvancedAnalytics extends EventEmitter {
       : 0;
 
     // Feature usage statistics
-    const totalFeatureUsage: number = Array.from(aggregation.features.values()).reduce((a: number, b: number) => a + b, 0);
-    const popularFeatures = Array.from(aggregation.features.entries())
+    const totalFeatureUsage: number = (Array.from(aggregation.features.values()) as number[]).reduce((a: number, b: number) => a + b, 0);
+    const popularFeatures = (Array.from(aggregation.features.entries()) as [string, number][])
       .map(([feature, usage]: [string, number]) => ({
         feature,
         usage,
@@ -326,7 +326,7 @@ export class AdvancedAnalytics extends EventEmitter {
 
     // Geographic distribution
     const totalSessions = aggregation.totalSessions;
-    const geographicDistribution = Array.from(aggregation.countries.entries())
+    const geographicDistribution = (Array.from(aggregation.countries.entries()) as [string, number][])
       .map(([country, sessions]: [string, number]) => ({
         country,
         sessions,
@@ -335,7 +335,7 @@ export class AdvancedAnalytics extends EventEmitter {
       .sort((a, b) => b.sessions - a.sessions);
 
     // Device statistics
-    const deviceStats = Array.from(aggregation.platforms.entries())
+    const deviceStats = (Array.from(aggregation.platforms.entries()) as [string, number][])
       .map(([platform, sessions]: [string, number]) => ({
         platform,
         sessions,
