@@ -315,7 +315,7 @@ export class AdvancedAnalytics extends EventEmitter {
       : 0;
 
     // Feature usage statistics
-    const totalFeatureUsage = Array.from(aggregation.features.values()).reduce((a: number, b: number) => a + b, 0);
+    const totalFeatureUsage: number = Array.from(aggregation.features.values()).reduce((a: number, b: number) => a + b, 0);
     const popularFeatures = Array.from(aggregation.features.entries())
       .map(([feature, usage]: [string, number]) => ({
         feature,
