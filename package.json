@@ -2,11 +2,11 @@
   "name": "rdp-signaling-server",
   "version": "1.0.0",
   "description": "Signaling server for RDP remote access",
-  "main": "dist/server.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node dist/server.js",
-    "build": "tsc --skipLibCheck",
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts"
+    "start": "node server.js",
+    "build": "echo 'No build needed for JavaScript'",
+    "dev": "node server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

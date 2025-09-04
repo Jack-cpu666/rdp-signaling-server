@@ -1,13 +1,9 @@
-import express from 'express';
-import { createServer } from 'http';
-import { Server } from 'socket.io';
-import cors from 'cors';
-import { v4 as uuidv4 } from 'uuid';
-import dotenv from 'dotenv';
-import * as path from 'path';
-import { SocketRateLimiter } from './rateLimiter';
-
-dotenv.config();
+const express = require('express');
+const { createServer } = require('http');
+const { Server } = require('socket.io');
+const cors = require('cors');
+const { v4: uuidv4 } = require('uuid');
+require('dotenv').config();
 
 const app = express();
 const httpServer = createServer(app);
@@ -46,28 +42,10 @@ app.get('/admin', (req, res) => {
   });
 });
 
-// Rate limiter setup
-const rateLimiter = new SocketRateLimiter(
-  { windowMs: 60000, max: 100 }, // Global: 100 requests per minute
-  new Map([
-    ['host-session', { windowMs: 300000, max: 5 }], // 5 sessions per 5 minutes
-    ['join-session', { windowMs: 60000, max: 20 }], // 20 join attempts per minute
-    ['control-event', { windowMs: 1000, max: 50 }] // 50 control events per second
-  ])
-);
+const sessions = new Map();
+const socketToSession = new Map();
 
-interface Session {
-  id: string;
-  hostSocketId: string;
-  token: string;
-  createdAt: Date;
-  clientSocketId?: string;
-}
-
-const sessions = new Map<string, Session>();
-const socketToSession = new Map<string, string>();
-
-function generateToken(): string {
+function generateToken() {
   return Math.random().toString(36).substring(2, 8).toUpperCase();
 }
 
@@ -93,7 +71,7 @@ io.on('connection', (socket) => {
 
   socket.on('host-session', (callback) => {
     const token = generateToken();
-    const session: Session = {
+    const session = {
       id: uuidv4(),
       hostSocketId: socket.id,
       token,
@@ -175,18 +153,6 @@ io.on('connection', (socket) => {
     
     if (targetId) {
       io.to(targetId).emit('ice-candidate', { candidate: data.candidate, from: socket.id });
-    }
-  });
-
-  socket.on('screen-data', (data) => {
-    const token = socketToSession.get(socket.id);
-    if (!token) return;
-    
-    const session = sessions.get(token);
-    if (!session || socket.id !== session.hostSocketId) return;
-    
-    if (session.clientSocketId) {
-      io.to(session.clientSocketId).emit('screen-data', data);
     }
   });
 
