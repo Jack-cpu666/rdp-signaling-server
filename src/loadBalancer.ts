@@ -274,8 +274,7 @@ export class LoadBalancer extends EventEmitter {
     try {
       // Simple HTTP health check
       const response = await fetch(`http://${node.host}:${node.port}/health`, {
-        method: 'GET',
-        timeout: 5000
+        method: 'GET'
       });
 
       const isHealthy = response.ok;

@@ -315,9 +315,9 @@ export class AdvancedAnalytics extends EventEmitter {
       : 0;
 
     // Feature usage statistics
-    const totalFeatureUsage = Array.from(aggregation.features.values()).reduce((a, b) => a + b, 0);
+    const totalFeatureUsage = Array.from(aggregation.features.values()).reduce((a: number, b: number) => a + b, 0);
     const popularFeatures = Array.from(aggregation.features.entries())
-      .map(([feature, usage]) => ({
+      .map(([feature, usage]: [string, number]) => ({
         feature,
         usage,
         percentage: totalFeatureUsage > 0 ? (usage / totalFeatureUsage) * 100 : 0
@@ -327,7 +327,7 @@ export class AdvancedAnalytics extends EventEmitter {
     // Geographic distribution
     const totalSessions = aggregation.totalSessions;
     const geographicDistribution = Array.from(aggregation.countries.entries())
-      .map(([country, sessions]) => ({
+      .map(([country, sessions]: [string, number]) => ({
         country,
         sessions,
         percentage: totalSessions > 0 ? (sessions / totalSessions) * 100 : 0
@@ -336,7 +336,7 @@ export class AdvancedAnalytics extends EventEmitter {
 
     // Device statistics
     const deviceStats = Array.from(aggregation.platforms.entries())
-      .map(([platform, sessions]) => ({
+      .map(([platform, sessions]: [string, number]) => ({
         platform,
         sessions,
         percentage: totalSessions > 0 ? (sessions / totalSessions) * 100 : 0
@@ -354,14 +354,14 @@ export class AdvancedAnalytics extends EventEmitter {
         totalDataTransferred: aggregation.dataTransferred,
         errorRate,
         peakConcurrentSessions: 0, // Would need real-time tracking
-        popularFeatures,
+        popularFeatures: popularFeatures as Array<{feature: string; usage: number; percentage: number}>,
         performanceMetrics: {
           averageLatency,
           averageBandwidth: 0, // Would need bandwidth tracking
           connectionSuccessRate
         },
-        geographicDistribution,
-        deviceStats
+        geographicDistribution: geographicDistribution as Array<{country: string; sessions: number; percentage: number}>,
+        deviceStats: deviceStats as Array<{platform: string; sessions: number; percentage: number}>
       }
     };
   }

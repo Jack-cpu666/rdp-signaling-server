@@ -23,9 +23,10 @@ export class RateLimiter {
 
   constructor(config: RateLimitConfig) {
     this.config = {
-      windowMs: 60000, // 1 minute
-      max: 100,
-      ...config
+      windowMs: config.windowMs || 60000, // 1 minute
+      max: config.max || 100,
+      skipSuccessfulRequests: config.skipSuccessfulRequests,
+      skipFailedRequests: config.skipFailedRequests
     };
 
     // Clean up old entries every 5 minutes
